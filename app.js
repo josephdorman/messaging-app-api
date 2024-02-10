@@ -8,6 +8,8 @@ const logger = require("morgan");
 const bcrypt = require("bcryptjs");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
+const JWTStrategy = require("passport-jwt").Strategy;
+const ExtractJWT = require("passport-jwt").ExtractJwt;
 
 const User = require("./models/user");
 
@@ -15,6 +17,7 @@ const indexRouter = require("./routes/index");
 const apiRouter = require("./routes/api");
 
 const CONNECTION_URL = process.env.MONGOOSE_CONNECTION;
+const JWT_SECRET = process.env.SECRET_KEY;
 
 const app = express();
 
@@ -42,6 +45,31 @@ passport.use(
       return done(err);
     }
   })
+);
+
+// Passport JWT Authorization
+passport.use(
+  new JWTStrategy(
+    {
+      jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+      secretOrKey: JWT_SECRET,
+    },
+    async function (jwt_payload, done) {
+      try {
+        const user = await User.findOne({
+          username: jwt_payload.username,
+          password: jwt_payload.password,
+        });
+
+        if (!user) {
+          return done(null, false, { message: "User not found." });
+        }
+        return done(null, user, { message: "Authorized Successfully" });
+      } catch (err) {
+        return done(err);
+      }
+    }
+  )
 );
 
 app.use(logger("dev"));

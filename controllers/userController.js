@@ -1,14 +1,25 @@
 require("dotenv").config();
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
+
+const JWT_SECRET = process.env.SECRET_KEY;
 
 const globalChannelId = "65c6e4d2e66df1ba996deeda";
 
 // LOGIN USER
 exports.login_user = asyncHandler(async (req, res, next) => {
-  res.json({ msg: "Login successful" });
+  jwt.sign(
+    /// CHANGE TO USE ENCRYPTED PASS FOR THE SIGNATURE ///
+    { username: req.body.username, password: req.body.password },
+    JWT_SECRET,
+    { expiresIn: "30sec" },
+    (err, token) => {
+      res.json({ token });
+    }
+  );
 });
 
 // Return all users

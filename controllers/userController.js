@@ -14,7 +14,7 @@ exports.login_user = asyncHandler(async (req, res, next) => {
 // Return all users
 exports.get_users = asyncHandler(async (req, res, next) => {
   try {
-    const users = await User.find();
+    const users = await User.find({}, "username profileIMG");
     res.json(users);
   } catch (err) {
     next(err);
@@ -24,7 +24,7 @@ exports.get_users = asyncHandler(async (req, res, next) => {
 // Return a single user
 exports.get_user = asyncHandler(async (req, res, next) => {
   try {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.params.id, "username profileIMG");
     res.json(user);
   } catch (err) {
     next(err);

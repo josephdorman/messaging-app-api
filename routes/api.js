@@ -15,7 +15,11 @@ router.get("/", function (req, res, next) {
 
 // GET //
 
-router.get("/users", userController.get_users);
+router.get(
+  "/users",
+  passport.authenticate("jwt", { session: false }),
+  userController.get_users
+);
 
 router.get("/user/:id", userController.get_user);
 

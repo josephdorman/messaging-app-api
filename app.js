@@ -10,6 +10,7 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const JWTStrategy = require("passport-jwt").Strategy;
 const ExtractJWT = require("passport-jwt").ExtractJwt;
+const jwt = require("jsonwebtoken");
 
 const User = require("./models/user");
 
@@ -40,6 +41,7 @@ passport.use(
       if (!match) {
         return done(null, false, { message: "Incorrect password." });
       }
+
       return done(null, user);
     } catch (err) {
       return done(err);
@@ -57,12 +59,11 @@ passport.use(
     async function (jwt_payload, done) {
       try {
         const user = await User.findOne({
-          username: jwt_payload.username,
-          password: jwt_payload.password,
+          _id: jwt_payload.id,
         });
 
         if (!user) {
-          return done(null, false, { message: "User not found." });
+          return done(null, false);
         }
         return done(null, user, { message: "Authorized Successfully" });
       } catch (err) {

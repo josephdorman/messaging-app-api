@@ -6,7 +6,7 @@ const ChannelSchema = new Schema({
   name: { type: String, require: true },
   users: [{ type: Schema.Types.ObjectId, ref: "User" }],
   messages: [{ type: Schema.Types.ObjectId, ref: "Message" }],
-  lastMessage: { type: String, require: true },
+  lastMessage: { type: String },
 });
 
 module.exports = mongoose.model("Channel", ChannelSchema);

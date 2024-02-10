@@ -6,6 +6,11 @@ const { body, validationResult } = require("express-validator");
 
 const globalChannelId = "65c6e4d2e66df1ba996deeda";
 
+// LOGIN USER
+exports.login_user = asyncHandler(async (req, res, next) => {
+  res.json({ msg: "Login successful" });
+});
+
 // Return all users
 exports.get_users = asyncHandler(async (req, res, next) => {
   try {

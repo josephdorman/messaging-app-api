@@ -11,15 +11,18 @@ const globalChannelId = "65c6e4d2e66df1ba996deeda";
 
 // LOGIN USER
 exports.login_user = asyncHandler(async (req, res, next) => {
-  jwt.sign(
-    /// CHANGE TO USE ENCRYPTED PASS FOR THE SIGNATURE ///
-    { username: req.body.username, password: req.body.password },
-    JWT_SECRET,
-    { expiresIn: "30sec" },
-    (err, token) => {
-      res.json({ token });
-    }
-  );
+  try {
+    jwt.sign(
+      { id: req.user._id },
+      JWT_SECRET,
+      { expiresIn: "30sec" },
+      (err, token) => {
+        res.json({ token });
+      }
+    );
+  } catch (err) {
+    next(err);
+  }
 });
 
 // Return all users

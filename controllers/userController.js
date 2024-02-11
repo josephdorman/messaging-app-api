@@ -58,6 +58,10 @@ exports.create_user = [
     .trim()
     .isLength({ min: 1 })
     .escape(),
+  body("email", "Email must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
@@ -73,6 +77,7 @@ exports.create_user = [
         const user = new User({
           username: req.body.username,
           password: hashedPassword,
+          email: req.body.email,
           channels: globalChannelId,
         });
         user.save();

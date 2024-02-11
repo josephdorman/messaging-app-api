@@ -64,6 +64,8 @@ exports.create_user = [
   body("email", "Email must not be empty.")
     .trim()
     .isLength({ min: 1 })
+    .isEmail()
+    .withMessage("Not a valid e-mail address")
     .escape(),
 
   asyncHandler(async (req, res, next) => {

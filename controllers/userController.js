@@ -47,7 +47,10 @@ exports.get_user = asyncHandler(async (req, res, next) => {
 
 // Create a new user
 
-/// ADD PASSWORD REQUIRMENTS LIKE 5 CHARS OR MORE/USE ATEAST ONE NUMBER ETC///
+/// ADD PASSWORD REQUIRMENTS LIKE 5 CHARS OR MORE/USE ATEAST ONE NUMBER ETC ///
+/// MAKE SURE ADD USER TO GLOBAL CHANNEL FROM CHANNEL MODEL ///
+/// MAKE SURE TO CHECK THAT EMAIL IS NOT ALREADY IN USE ///
+
 exports.create_user = [
   // Validate and sanitize fields.
   body("username", "Username must not be empty.")
@@ -71,6 +74,12 @@ exports.create_user = [
     }
 
     try {
+      const user = await User.findOne({ username: req.body.username });
+
+      if (user) {
+        return res.status(400).json({ msg: "Username already exists!" });
+      }
+
       bcrypt.hash(req.body.password, 10, async (err, hashedPassword) => {
         if (err) throw err;
 

@@ -66,6 +66,12 @@ exports.create_user = [
     .isLength({ min: 1 })
     .isEmail()
     .withMessage("Not a valid e-mail address")
+    .custom(async (value) => {
+      const existingEmail = await User.findOne({ email: value });
+      if (existingEmail) {
+        throw new Error("Email already in use");
+      }
+    })
     .escape(),
 
   asyncHandler(async (req, res, next) => {

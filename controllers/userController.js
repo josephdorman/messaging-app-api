@@ -1,5 +1,6 @@
 require("dotenv").config();
 const User = require("../models/user");
+const Channel = require("../models/channel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
@@ -47,9 +48,7 @@ exports.get_user = asyncHandler(async (req, res, next) => {
 
 // Create a new user
 
-/// ADD PASSWORD REQUIRMENTS LIKE 5 CHARS OR MORE/USE ATEAST ONE NUMBER ETC ///
-/// MAKE SURE ADD USER TO GLOBAL CHANNEL FROM CHANNEL MODEL ///
-/// MAKE SURE TO CHECK THAT EMAIL IS NOT ALREADY IN USE ///
+/// LOWER PASSWORD REQ POSSIBLY ///
 
 exports.create_user = [
   // Validate and sanitize fields.
@@ -68,12 +67,14 @@ exports.create_user = [
     "Password needs to be atleast 5 characters long, have one uppercase, one lowercase, one number and one symbol."
   )
     .trim()
+    /*
     .isStrongPassword({
       minLength: 5,
       minUppercase: 1,
       minNumbers: 1,
       minSymbols: 1,
     })
+    */
     .escape(),
   body("email", "Email must not be empty.")
     .trim()
@@ -105,7 +106,12 @@ exports.create_user = [
           email: req.body.email,
           channels: globalChannelId,
         });
+
+        const channel = await Channel.findById(globalChannelId);
+        channel.users.push(user._id);
+
         user.save();
+        channel.save();
       });
       res.json({
         msg: "User created successfully!",

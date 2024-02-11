@@ -63,9 +63,17 @@ exports.create_user = [
       }
     })
     .escape(),
-  body("password", "Password must not be empty.")
+  body(
+    "password",
+    "Password needs to be atleast 5 characters long, have one uppercase, one lowercase, one number and one symbol."
+  )
     .trim()
-    .isLength({ min: 1 })
+    .isStrongPassword({
+      minLength: 5,
+      minUppercase: 1,
+      minNumbers: 1,
+      minSymbols: 1,
+    })
     .escape(),
   body("email", "Email must not be empty.")
     .trim()

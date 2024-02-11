@@ -56,6 +56,12 @@ exports.create_user = [
   body("username", "Username must not be empty.")
     .trim()
     .isLength({ min: 1 })
+    .custom(async (value) => {
+      const existingUsername = await User.findOne({ username: value });
+      if (existingUsername) {
+        throw new Error("Username already in use");
+      }
+    })
     .escape(),
   body("password", "Password must not be empty.")
     .trim()
@@ -82,12 +88,6 @@ exports.create_user = [
     }
 
     try {
-      const user = await User.findOne({ username: req.body.username });
-
-      if (user) {
-        return res.status(400).json({ msg: "Username already exists!" });
-      }
-
       bcrypt.hash(req.body.password, 10, async (err, hashedPassword) => {
         if (err) throw err;
 

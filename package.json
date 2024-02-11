@@ -8,6 +8,7 @@
     "serverstart": "DEBUG=blog-api:* npm run devstart"
   },
   "dependencies": {
+    "axios": "^1.6.7",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",

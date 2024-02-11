@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const bcrypt = require("bcryptjs");
 const passport = require("passport");
+const cors = require("cors");
 const LocalStrategy = require("passport-local").Strategy;
 const JWTStrategy = require("passport-jwt").Strategy;
 const ExtractJWT = require("passport-jwt").ExtractJwt;
@@ -73,6 +74,7 @@ passport.use(
   )
 );
 
+app.use(cors());
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

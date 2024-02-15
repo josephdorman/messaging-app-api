@@ -18,7 +18,11 @@ exports.login_user = asyncHandler(async (req, res, next) => {
       JWT_SECRET,
       { expiresIn: "30sec" },
       (err, token) => {
-        res.json({ token });
+        res
+          .cookie("token", token, {
+            httpOnly: true,
+          })
+          .send({ userID: req.user._id });
       }
     );
   } catch (err) {
@@ -26,9 +30,12 @@ exports.login_user = asyncHandler(async (req, res, next) => {
   }
 });
 
+exports.session_user = asyncHandler(async (req, res, next) => {});
+
 // Return all users
 exports.get_users = asyncHandler(async (req, res, next) => {
   try {
+    console.log(req.signedCookies);
     const users = await User.find({}, "username profileIMG");
     res.json(users);
   } catch (err) {

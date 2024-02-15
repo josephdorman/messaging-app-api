@@ -1,3 +1,4 @@
+const cookieJwtAuth = require("../middleware/cookieJwtAuth");
 const express = require("express");
 const router = express.Router();
 const passport = require("passport");
@@ -29,6 +30,12 @@ router.post(
   "/user/login",
   passport.authenticate("local", { session: false }),
   userController.login_user
+);
+
+router.post(
+  "/user/session",
+  cookieJwtAuth.cookieJwtAuth,
+  userController.session_user
 );
 
 router.post("/user/create", userController.create_user);

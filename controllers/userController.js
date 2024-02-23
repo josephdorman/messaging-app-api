@@ -16,13 +16,19 @@ exports.login_user = asyncHandler(async (req, res, next) => {
     jwt.sign(
       { id: req.user._id },
       JWT_SECRET,
-      { expiresIn: "30sec" },
+      { expiresIn: "10min" },
       (err, token) => {
         res
           .cookie("token", token, {
             httpOnly: true,
           })
-          .send({ userID: req.user._id });
+          .json({
+            user: {
+              id: req.user._id,
+              username: req.user.username,
+              profileIMG: req.user.profileIMG,
+            },
+          });
       }
     );
   } catch (err) {
@@ -30,7 +36,15 @@ exports.login_user = asyncHandler(async (req, res, next) => {
   }
 });
 
-exports.session_user = asyncHandler(async (req, res, next) => {});
+exports.session_user = asyncHandler(async (req, res, next) => {
+  try {
+    console.log("called");
+    const user = await User.findById(req.user.id, "username profileIMG");
+    res.json(user);
+  } catch (err) {
+    next(err);
+  }
+});
 
 // Return all users
 exports.get_users = asyncHandler(async (req, res, next) => {

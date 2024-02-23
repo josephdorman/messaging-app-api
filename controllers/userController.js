@@ -67,6 +67,18 @@ exports.get_user = asyncHandler(async (req, res, next) => {
   }
 });
 
+// Return users friends
+exports.get_user_friends = asyncHandler(async (req, res, next) => {
+  try {
+    console.log(req);
+    // const user = await User.findById(req.params.id, "friends");
+    console.log(user);
+    res.json({ msg: "success" });
+  } catch (err) {
+    next(err);
+  }
+});
+
 // Create a new user
 
 /// LOWER PASSWORD REQ POSSIBLY ///

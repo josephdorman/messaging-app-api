@@ -6,6 +6,7 @@ const passport = require("passport");
 // Require controller modules.
 const userController = require("../controllers/userController");
 const channelController = require("../controllers/channelController");
+const friendController = require("../controllers/friendController");
 
 /* GET api index. */
 router.get("/", function (req, res, next) {
@@ -20,12 +21,6 @@ router.get(
   "/users",
   // passport.authenticate("jwt", { session: false }),
   userController.get_users
-);
-
-router.get(
-  "/user/friends",
-  cookieJwtAuth.cookieJwtAuth,
-  userController.get_user_friends
 );
 
 router.get("/user/:id", userController.get_user);
@@ -45,6 +40,14 @@ router.post(
 );
 
 router.post("/user/create", userController.create_user);
+
+/// FRIEND ROUTES ///
+
+router.get(
+  "/friends",
+  cookieJwtAuth.cookieJwtAuth,
+  friendController.get_friends
+);
 
 /// CHANNEL ROUTES ///
 

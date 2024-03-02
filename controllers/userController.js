@@ -66,19 +66,6 @@ exports.get_user = asyncHandler(async (req, res, next) => {
   }
 });
 
-// Return users friends
-exports.get_user_friends = asyncHandler(async (req, res, next) => {
-  try {
-    const user = await User.findById(req.user.id, "friends").populate(
-      "friends",
-      "username profileIMG"
-    );
-    res.json(user);
-  } catch (err) {
-    next(err);
-  }
-});
-
 // Create a new user
 
 /// LOWER PASSWORD REQ POSSIBLY ///

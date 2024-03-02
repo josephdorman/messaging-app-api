@@ -38,7 +38,6 @@ exports.login_user = asyncHandler(async (req, res, next) => {
 
 exports.session_user = asyncHandler(async (req, res, next) => {
   try {
-    console.log("called");
     const user = await User.findById(req.user.id, "username profileIMG");
     res.json(user);
   } catch (err) {
@@ -70,10 +69,11 @@ exports.get_user = asyncHandler(async (req, res, next) => {
 // Return users friends
 exports.get_user_friends = asyncHandler(async (req, res, next) => {
   try {
-    console.log(req);
-    // const user = await User.findById(req.params.id, "friends");
-    console.log(user);
-    res.json({ msg: "success" });
+    const user = await User.findById(req.user.id, "friends").populate(
+      "friends",
+      "username profileIMG"
+    );
+    res.json(user);
   } catch (err) {
     next(err);
   }

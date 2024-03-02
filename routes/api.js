@@ -18,8 +18,14 @@ router.get("/", function (req, res, next) {
 
 router.get(
   "/users",
-  passport.authenticate("jwt", { session: false }),
+  // passport.authenticate("jwt", { session: false }),
   userController.get_users
+);
+
+router.get(
+  "/user/friends",
+  cookieJwtAuth.cookieJwtAuth,
+  userController.get_user_friends
 );
 
 router.get("/user/:id", userController.get_user);

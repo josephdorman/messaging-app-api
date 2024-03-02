@@ -16,7 +16,7 @@ exports.login_user = asyncHandler(async (req, res, next) => {
     jwt.sign(
       { id: req.user._id },
       JWT_SECRET,
-      { expiresIn: "10min" },
+      { expiresIn: "1hr" },
       (err, token) => {
         res
           .cookie("token", token, {

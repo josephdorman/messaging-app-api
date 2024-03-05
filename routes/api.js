@@ -49,6 +49,12 @@ router.get(
   friendController.get_friends
 );
 
+router.get(
+  "/friend/:id",
+  cookieJwtAuth.cookieJwtAuth,
+  friendController.get_friend
+);
+
 /// CHANNEL ROUTES ///
 
 // GET //

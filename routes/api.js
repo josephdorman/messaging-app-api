@@ -57,6 +57,12 @@ router.get(
 );
 
 router.get(
+  "/friends/blocked",
+  cookieJwtAuth.cookieJwtAuth,
+  friendController.get_blocked
+);
+
+router.get(
   "/friend/:id",
   cookieJwtAuth.cookieJwtAuth,
   friendController.get_friend

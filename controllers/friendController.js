@@ -32,6 +32,7 @@ exports.get_friend = asyncHandler(async (req, res, next) => {
   }
 });
 
+// Return friend requests
 exports.get_friend_requests = asyncHandler(async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id)
@@ -40,6 +41,19 @@ exports.get_friend_requests = asyncHandler(async (req, res, next) => {
         path: "friendRequests.sent friendRequests.received",
         select: "username profileIMG",
       });
+    res.json(user);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Return blocked users
+exports.get_blocked = asyncHandler(async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id, "blocked").populate(
+      "blocked",
+      "username profileIMG"
+    );
     res.json(user);
   } catch (err) {
     next(err);

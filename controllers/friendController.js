@@ -63,7 +63,7 @@ exports.get_blocked = asyncHandler(async (req, res, next) => {
 // Send a friend request
 exports.send_friend_request = [
   // Validate and sanitize fields.
-  body("name", "Username must not be empty.")
+  body("friendName", "Username must not be empty.")
     .trim()
     .isLength({ min: 1 })
     .escape(),

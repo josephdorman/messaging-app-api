@@ -43,6 +43,7 @@ router.post("/user/create", userController.create_user);
 
 /// FRIEND ROUTES ///
 
+// GET //
 router.get(
   "/friends",
   cookieJwtAuth.cookieJwtAuth,
@@ -53,6 +54,13 @@ router.get(
   "/friend/:id",
   cookieJwtAuth.cookieJwtAuth,
   friendController.get_friend
+);
+
+// POST //
+router.post(
+  "/friend/request",
+  cookieJwtAuth.cookieJwtAuth,
+  friendController.send_friend_request
 );
 
 /// CHANNEL ROUTES ///

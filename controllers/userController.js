@@ -36,6 +36,16 @@ exports.login_user = asyncHandler(async (req, res, next) => {
   }
 });
 
+// LOGOUT USER
+exports.logout_user = asyncHandler(async (req, res, next) => {
+  try {
+    res.clearCookie("token");
+    res.json({ msg: "Logged out successfully!" });
+  } catch (err) {
+    next(err);
+  }
+});
+
 exports.session_user = asyncHandler(async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id, "username profileIMG");

@@ -34,6 +34,12 @@ router.post(
 );
 
 router.post(
+  "/user/logout",
+  cookieJwtAuth.cookieJwtAuth,
+  userController.logout_user
+);
+
+router.post(
   "/user/session",
   cookieJwtAuth.cookieJwtAuth,
   userController.session_user

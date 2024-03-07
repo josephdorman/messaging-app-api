@@ -12,6 +12,7 @@ const UserSchema = new Schema({
     sent: [{ type: Schema.Types.ObjectId, ref: "User" }],
     received: [{ type: Schema.Types.ObjectId, ref: "User" }],
   },
+  blocked: [{ type: Schema.Types.ObjectId, ref: "User" }],
   channels: [{ type: Schema.Types.ObjectId, ref: "Channel" }],
   messages: [{ type: Schema.Types.ObjectId, ref: "Message" }],
 });

@@ -76,7 +76,9 @@ exports.create_user = [
     .trim()
     .isLength({ min: 1 })
     .custom(async (value) => {
-      const existingUsername = await User.findOne({ username: value });
+      const existingUsername = await User.findOne({
+        username: { $regex: value, $options: "i" },
+      });
       if (existingUsername) {
         throw new Error("Username already in use");
       }

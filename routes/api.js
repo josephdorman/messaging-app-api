@@ -51,6 +51,12 @@ router.get(
 );
 
 router.get(
+  "/friends/pending",
+  cookieJwtAuth.cookieJwtAuth,
+  friendController.get_friend_requests
+);
+
+router.get(
   "/friend/:id",
   cookieJwtAuth.cookieJwtAuth,
   friendController.get_friend

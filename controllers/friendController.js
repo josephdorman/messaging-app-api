@@ -25,8 +25,22 @@ exports.get_friend = asyncHandler(async (req, res, next) => {
         match: { _id: req.params.id },
         select: "username profileIMG",
       });
-    console.log(friend.friends[0]);
+    // console.log(friend.friends[0]);
     res.json(friend.friends[0]);
+  } catch (err) {
+    next(err);
+  }
+});
+
+exports.get_friend_requests = asyncHandler(async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id)
+      .select("friendRequests")
+      .populate({
+        path: "friendRequests.sent friendRequests.received",
+        select: "username profileIMG",
+      });
+    res.json(user);
   } catch (err) {
     next(err);
   }

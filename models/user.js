@@ -8,6 +8,10 @@ const UserSchema = new Schema({
   email: { type: String, require: true },
   profileIMG: { type: String, default: "defaultProfile.jpg" },
   friends: [{ type: Schema.Types.ObjectId, ref: "User" }],
+  friendRequests: {
+    sent: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    received: [{ type: Schema.Types.ObjectId, ref: "User" }],
+  },
   channels: [{ type: Schema.Types.ObjectId, ref: "Channel" }],
   messages: [{ type: Schema.Types.ObjectId, ref: "Message" }],
 });

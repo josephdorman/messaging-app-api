@@ -61,6 +61,7 @@ exports.get_blocked = asyncHandler(async (req, res, next) => {
 });
 
 // Send a friend request
+/// MAKE SURE CANT SEND TO BLOCKED USERS ///
 exports.send_friend_request = [
   // Validate and sanitize fields.
   body("friendName", "Username must not be empty.")
@@ -82,6 +83,12 @@ exports.send_friend_request = [
       });
 
       if (friend) {
+        // Check if sending to self
+        if (user._id.toString() === friend._id.toString()) {
+          return res.json({
+            msg: "You can't send a friend request to yourself",
+          });
+        }
         // Check if already friends
         if (user.friends.includes(friend._id)) {
           return res.json({ msg: "Already friends with this user" });

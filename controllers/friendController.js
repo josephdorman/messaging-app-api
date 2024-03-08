@@ -107,3 +107,27 @@ exports.send_friend_request = [
     }
   }),
 ];
+
+// Accept friend request
+exports.accept_friend_request = asyncHandler(async (req, res, next) => {
+  try {
+    console.log(req.body.friendId, req.user.id);
+    const user = await User.findById(req.user.id, "friends friendRequests");
+    const friend = await User.findById(
+      req.body.friendId,
+      "friends friendRequests"
+    );
+    user.friends.push(friend._id);
+    friend.friends.push(user._id);
+
+    user.friendRequests.received.pull(friend._id);
+    friend.friendRequests.sent.pull(user._id);
+
+    user.save();
+    friend.save();
+
+    res.json({ msg: "Friend request accepted!" });
+  } catch (err) {
+    next(err);
+  }
+});

@@ -81,6 +81,12 @@ router.post(
   friendController.send_friend_request
 );
 
+router.post(
+  "/friend/accept",
+  cookieJwtAuth.cookieJwtAuth,
+  friendController.accept_friend_request
+);
+
 /// CHANNEL ROUTES ///
 
 // GET //

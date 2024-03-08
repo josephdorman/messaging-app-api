@@ -131,3 +131,30 @@ exports.accept_friend_request = asyncHandler(async (req, res, next) => {
     next(err);
   }
 });
+
+// Cancel friend request
+exports.cancel_friend_request = asyncHandler(async (req, res, next) => {
+  try {
+    const type = req.body.type;
+    const user = await User.findById(req.user.id, "friends friendRequests");
+    const friend = await User.findById(
+      req.body.friendId,
+      "friends friendRequests"
+    );
+
+    if (type === "outgoing") {
+      user.friendRequests.sent.pull(friend._id);
+      friend.friendRequests.received.pull(user._id);
+    } else {
+      user.friendRequests.received.pull(friend._id);
+      friend.friendRequests.sent.pull(user._id);
+    }
+
+    user.save();
+    friend.save();
+
+    res.json({ msg: "Friend request canceled!" });
+  } catch (err) {
+    next(err);
+  }
+});

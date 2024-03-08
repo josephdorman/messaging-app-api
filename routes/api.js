@@ -87,6 +87,12 @@ router.post(
   friendController.accept_friend_request
 );
 
+router.post(
+  "/friend/cancel",
+  cookieJwtAuth.cookieJwtAuth,
+  friendController.cancel_friend_request
+);
+
 /// CHANNEL ROUTES ///
 
 // GET //

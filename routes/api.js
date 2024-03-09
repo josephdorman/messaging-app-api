@@ -76,6 +76,12 @@ router.get(
 
 // POST //
 router.post(
+  "/friend/remove",
+  cookieJwtAuth.cookieJwtAuth,
+  friendController.remove_friend
+);
+
+router.post(
   "/friend/request",
   cookieJwtAuth.cookieJwtAuth,
   friendController.send_friend_request

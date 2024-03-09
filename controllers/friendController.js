@@ -60,6 +60,24 @@ exports.get_blocked = asyncHandler(async (req, res, next) => {
   }
 });
 
+// Remove a friend
+exports.remove_friend = asyncHandler(async (req, res, next) => {
+  try {
+    console.log(req.body.friendId, req.user.id);
+    const user = await User.findById(req.user.id, "friends");
+    const friends = await User.findById(req.body.friendId, "friends");
+
+    user.friends.pull(friends._id);
+    friends.friends.pull(user._id);
+    user.save();
+    friends.save();
+
+    res.json({ msg: "Friend removed!" });
+  } catch (err) {
+    next(err);
+  }
+});
+
 // Send a friend request
 /// MAKE SURE CANT SEND TO BLOCKED USERS ///
 exports.send_friend_request = [

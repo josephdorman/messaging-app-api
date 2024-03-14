@@ -107,6 +107,16 @@ exports.send_friend_request = [
             msg: "You can't send a friend request to yourself",
           });
         }
+        if (friend.blocked.includes(user._id)) {
+          return res.json({
+            msg: "The user you're trying to add has blocked you",
+          });
+        }
+        if (user.blocked.includes(friend._id)) {
+          return res.json({
+            msg: "You can't send a friend request to a blocked user",
+          });
+        }
         // Check if already friends
         if (user.friends.includes(friend._id)) {
           return res.json({ msg: "Already friends with this user" });

@@ -34,6 +34,12 @@ router.post(
 );
 
 router.post(
+  "/user/unblock",
+  cookieJwtAuth.cookieJwtAuth,
+  userController.unblock_user
+);
+
+router.post(
   "/user/login",
   passport.authenticate("local", { session: false }),
   userController.login_user

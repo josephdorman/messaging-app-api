@@ -96,6 +96,19 @@ exports.block_user = asyncHandler(async (req, res, next) => {
   }
 });
 
+exports.unblock_user = asyncHandler(async (req, res, next) => {
+  try {
+    const friend = await User.findById(req.body.friendId, "_id");
+    const user = await User.findById(req.user.id, "blocked");
+    user.blocked.pull(friend._id);
+    user.save();
+
+    res.json({ msg: "User unblocked!" });
+  } catch (err) {
+    next(err);
+  }
+});
+
 // Create a new user
 
 /// LOWER PASSWORD REQ POSSIBLY ///

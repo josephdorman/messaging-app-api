@@ -76,6 +76,19 @@ exports.get_user = asyncHandler(async (req, res, next) => {
   }
 });
 
+// Return blocked users
+exports.get_blocked = asyncHandler(async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id, "blocked").populate(
+      "blocked",
+      "username profileIMG"
+    );
+    res.json(user);
+  } catch (err) {
+    next(err);
+  }
+});
+
 // Block a user
 /// THESE SHOULD ALREADY BE ACCOUNT FOR BY THE NATURE OF HOW THE LIST WORKDS
 /// Cant block yourself

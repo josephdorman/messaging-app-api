@@ -23,6 +23,12 @@ router.get(
   userController.get_users
 );
 
+router.get(
+  "/users/blocked",
+  cookieJwtAuth.cookieJwtAuth,
+  userController.get_blocked
+);
+
 router.get("/user/:id", userController.get_user);
 
 // POST //
@@ -72,12 +78,6 @@ router.get(
   "/friends/pending",
   cookieJwtAuth.cookieJwtAuth,
   friendController.get_friend_requests
-);
-
-router.get(
-  "/friends/blocked",
-  cookieJwtAuth.cookieJwtAuth,
-  friendController.get_blocked
 );
 
 router.get(

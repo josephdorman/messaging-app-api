@@ -28,6 +28,12 @@ router.get("/user/:id", userController.get_user);
 // POST //
 
 router.post(
+  "/user/block",
+  cookieJwtAuth.cookieJwtAuth,
+  userController.block_user
+);
+
+router.post(
   "/user/login",
   passport.authenticate("local", { session: false }),
   userController.login_user

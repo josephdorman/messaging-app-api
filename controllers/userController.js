@@ -76,6 +76,26 @@ exports.get_user = asyncHandler(async (req, res, next) => {
   }
 });
 
+// Block a user
+/// THESE SHOULD ALREADY BE ACCOUNT FOR BY THE NATURE OF HOW THE LIST WORKDS
+/// Cant block yourself
+/// Cant block a user who is already blocked
+exports.block_user = asyncHandler(async (req, res, next) => {
+  try {
+    const friend = await User.findById(req.body.friendId, "friends");
+    const user = await User.findById(req.user.id, "friends blocked");
+    user.friends.pull(friend._id);
+    user.blocked.push(friend._id);
+    friend.friends.pull(user._id);
+    user.save();
+    friend.save();
+
+    res.json({ msg: "User blocked!" });
+  } catch (err) {
+    next(err);
+  }
+});
+
 // Create a new user
 
 /// LOWER PASSWORD REQ POSSIBLY ///

@@ -79,7 +79,6 @@ exports.remove_friend = asyncHandler(async (req, res, next) => {
 });
 
 // Send a friend request
-/// MAKE SURE CANT SEND TO BLOCKED USERS ///
 exports.send_friend_request = [
   // Validate and sanitize fields.
   body("friendName", "Username must not be empty.")

@@ -32,6 +32,21 @@ exports.get_friend = asyncHandler(async (req, res, next) => {
   }
 });
 
+// Return searched users
+exports.get_searched_friends = asyncHandler(async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id, "friends").populate({
+      path: "friends",
+      match: { username: { $regex: req.body.username, $options: "i" } },
+      select: "username profileIMG",
+    });
+
+    res.json(user);
+  } catch (err) {
+    next(err);
+  }
+});
+
 // Return friend requests
 exports.get_friend_requests = asyncHandler(async (req, res, next) => {
   try {

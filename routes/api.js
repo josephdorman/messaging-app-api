@@ -87,6 +87,13 @@ router.get(
 );
 
 // POST //
+
+router.post(
+  "/friend/search",
+  cookieJwtAuth.cookieJwtAuth,
+  friendController.get_searched_friends
+);
+
 router.post(
   "/friend/remove",
   cookieJwtAuth.cookieJwtAuth,

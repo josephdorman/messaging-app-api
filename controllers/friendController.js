@@ -89,27 +89,29 @@ exports.send_friend_request = [
       if (friend) {
         // Check if sending to self
         if (user._id.toString() === friend._id.toString()) {
-          return res.json({
+          return res.status(400).json({
             msg: "You can't send a friend request to yourself",
           });
         }
         if (friend.blocked.includes(user._id)) {
-          return res.json({
+          return res.status(400).json({
             msg: "The user you're trying to add has blocked you",
           });
         }
         if (user.blocked.includes(friend._id)) {
-          return res.json({
+          return res.status(400).json({
             msg: "You can't send a friend request to a blocked user",
           });
         }
         // Check if already friends
         if (user.friends.includes(friend._id)) {
-          return res.json({ msg: "Already friends with this user" });
+          return res
+            .status(400)
+            .json({ msg: "Already friends with this user" });
         }
         // Check if already sent a friend request
         if (user.friendRequests.sent.includes(friend._id)) {
-          return res.json({
+          return res.status(400).json({
             msg: "Already sent a friend request to this user",
           });
         }
@@ -119,7 +121,7 @@ exports.send_friend_request = [
         friend.save();
         user.save();
       } else {
-        return res.json({ msg: "User not found!" });
+        return res.status(400).json({ msg: "User not found!" });
       }
 
       res.json({ msg: "Friend request sent!" });

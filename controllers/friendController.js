@@ -92,7 +92,7 @@ exports.send_friend_request = [
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json(errors);
     }
 
     try {
@@ -101,34 +101,35 @@ exports.send_friend_request = [
         username: { $regex: req.body.friendName, $options: "i" },
       });
 
+      const sendError = (msg) => {
+        return res.status(400).json({
+          errors: [{ msg: msg }],
+        });
+      };
+
       if (friend) {
         // Check if sending to self
         if (user._id.toString() === friend._id.toString()) {
-          return res.status(400).json({
-            msg: "You can't send a friend request to yourself",
-          });
+          sendError("You can't send a friend request to yourself");
+          return;
         }
         if (friend.blocked.includes(user._id)) {
-          return res.status(400).json({
-            msg: "The user you're trying to add has blocked you",
-          });
+          sendError("The user you're trying to add has blocked you");
+          return;
         }
         if (user.blocked.includes(friend._id)) {
-          return res.status(400).json({
-            msg: "You can't send a friend request to a blocked user",
-          });
+          sendError("You can't send a friend request to a blocked user");
+          return;
         }
         // Check if already friends
         if (user.friends.includes(friend._id)) {
-          return res
-            .status(400)
-            .json({ msg: "Already friends with this user" });
+          sendError("Already friends with this user");
+          return;
         }
         // Check if already sent a friend request
         if (user.friendRequests.sent.includes(friend._id)) {
-          return res.status(400).json({
-            msg: "Already sent a friend request to this user",
-          });
+          sendError("Already sent a friend request to this user");
+          return;
         }
 
         friend.friendRequests.received.push(req.user.id);
@@ -136,7 +137,8 @@ exports.send_friend_request = [
         friend.save();
         user.save();
       } else {
-        return res.status(400).json({ msg: "User not found!" });
+        sendError("User not found");
+        return;
       }
 
       res.json({ msg: "Friend request sent!" });

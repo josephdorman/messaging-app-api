@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const User = require("../models/user");
+const Channel = require("../models/channel");
 const { body, validationResult } = require("express-validator");
 
 // Return all friends
@@ -157,12 +158,18 @@ exports.accept_friend_request = asyncHandler(async (req, res, next) => {
       req.body.friendId,
       "friends friendRequests"
     );
+
+    const channel = new Channel({
+      users: [user._id, friend._id],
+    });
+
     user.friends.push(friend._id);
     friend.friends.push(user._id);
 
     user.friendRequests.received.pull(friend._id);
     friend.friendRequests.sent.pull(user._id);
 
+    channel.save();
     user.save();
     friend.save();
 

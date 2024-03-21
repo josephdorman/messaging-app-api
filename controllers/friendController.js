@@ -166,6 +166,9 @@ exports.accept_friend_request = asyncHandler(async (req, res, next) => {
     user.friends.push(friend._id);
     friend.friends.push(user._id);
 
+    user.channels.push(channel._id);
+    friend.channels.push(channel._id);
+
     user.friendRequests.received.pull(friend._id);
     friend.friendRequests.sent.pull(user._id);
 

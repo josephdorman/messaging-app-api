@@ -94,6 +94,7 @@ exports.get_users_channels = asyncHandler(async (req, res, next) => {
   try {
     const channels = await User.findById(req.user.id, "channels").populate({
       path: "channels",
+      select: "users name",
       populate: { path: "users", select: "username" },
     });
 

@@ -29,6 +29,12 @@ router.get(
   userController.get_blocked
 );
 
+router.get(
+  "/users/channels",
+  cookieJwtAuth.cookieJwtAuth,
+  userController.get_users_channels
+);
+
 router.get("/user/:id", userController.get_user);
 
 // POST //

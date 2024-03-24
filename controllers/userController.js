@@ -89,6 +89,20 @@ exports.get_blocked = asyncHandler(async (req, res, next) => {
   }
 });
 
+// Return a users channels
+exports.get_users_channels = asyncHandler(async (req, res, next) => {
+  try {
+    const channels = await User.findById(req.user.id, "channels").populate({
+      path: "channels",
+      populate: { path: "users", select: "username" },
+    });
+
+    res.json(channels);
+  } catch (err) {
+    next(err);
+  }
+});
+
 // Block a user
 /// THESE SHOULD ALREADY BE ACCOUNT FOR BY THE NATURE OF HOW THE LIST WORKDS
 /// Cant block yourself

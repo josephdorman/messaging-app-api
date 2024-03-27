@@ -6,6 +6,7 @@ const passport = require("passport");
 // Require controller modules.
 const userController = require("../controllers/userController");
 const channelController = require("../controllers/channelController");
+const messageController = require("../controllers/messageController");
 const friendController = require("../controllers/friendController");
 
 /* GET api index. */
@@ -130,10 +131,27 @@ router.post(
 
 router.get("/channels", channelController.get_channels);
 
+router.get(
+  "/channel/:id/messages",
+  cookieJwtAuth.cookieJwtAuth,
+  channelController.get_channel_messages
+);
+
 router.get("/channel/:id", channelController.get_channel);
 
 // POST //
 
 router.post("/channel/create", channelController.create_channel);
+
+/// MESSAGE ROUTES ///
+
+// GET //
+
+// POST //
+router.post(
+  "/message/create",
+  cookieJwtAuth.cookieJwtAuth,
+  messageController.create_message
+);
 
 module.exports = router;

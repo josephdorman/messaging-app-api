@@ -22,6 +22,25 @@ exports.get_channel = asyncHandler(async (req, res, next) => {
   }
 });
 
+// Return messages in channel
+exports.get_channel_messages = asyncHandler(async (req, res, next) => {
+  try {
+    const channel = await Channel.findById(req.params.id)
+      .populate({
+        path: "messages",
+        populate: { path: "user", select: "username profileIMG" },
+      })
+      .populate({
+        path: "users",
+        select: "username profileIMG",
+      });
+
+    res.json(channel);
+  } catch (err) {
+    next(err);
+  }
+});
+
 // !IMPORTANT! ///
 /// ADD USER WHO REQUESTED THE CHANNEL CREATE TO THE CHANNEL ///
 

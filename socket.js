@@ -25,10 +25,31 @@ const socketServer = (server) => {
       io.emit("receive_friends", onlineUsers);
     });
 
+    socket.on("join_channels", (channels) => {
+      if (channels) {
+        channels.forEach((channel) => {
+          console.log("joining channel", channel._id);
+          socket.join(channel._id);
+        });
+      }
+    });
+
+    socket.on("send_message", (msg, channel, user) => {
+      channel.messages.push({
+        body: msg,
+        channel: channel._id,
+        date: Date.now(),
+        user: user,
+        _id: Date.now(),
+      });
+      io.to(channel._id).emit("receive_message", channel);
+    });
+
     socket.on("disconnect", () => {
       onlineUsers = onlineUsers.filter((user) => user.socketId !== socket.id);
 
       io.emit("receive_friends", onlineUsers);
+      console.log(`Leaving Rooms: ${socket.rooms}`);
       console.log(`User Disconnected: ${socket.id}`);
     });
   });

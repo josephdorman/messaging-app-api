@@ -35,14 +35,17 @@ const socketServer = (server) => {
     });
 
     socket.on("send_message", (msg, channel, user) => {
-      channel.messages.push({
+      const message = {
         body: msg,
         channel: channel._id,
         date: Date.now(),
         user: user,
         _id: Date.now(),
-      });
+      };
+
+      channel.messages.push(message);
       io.to(channel._id).emit("receive_message", channel);
+      io.emit("receive_last_message", message);
     });
 
     socket.on("disconnect", () => {

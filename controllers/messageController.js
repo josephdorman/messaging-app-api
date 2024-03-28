@@ -38,6 +38,8 @@ exports.create_message = [
       user.messages.push(message._id);
       channel.messages.push(message._id);
 
+      channel.lastMessage = message._id;
+
       user.save();
       channel.save();
       message.save();

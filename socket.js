@@ -35,10 +35,11 @@ const socketServer = (server) => {
     });
 
     socket.on("send_message", (msg, channel, user) => {
+      let testDate = new Date();
       const message = {
         body: msg,
         channel: channel._id,
-        date: Date.now(),
+        date: testDate.toISOString(),
         user: user,
         _id: Date.now(),
       };

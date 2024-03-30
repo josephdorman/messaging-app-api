@@ -30,7 +30,7 @@ exports.get_searched_channels = asyncHandler(async (req, res, next) => {
       ? await User.findById(req.user.id, "channels").populate({
           path: "channels",
           select: "users channelName lastMessage",
-          populate: { path: "users lastMessage", select: "username body" },
+          populate: { path: "users lastMessage", select: "username body date" },
           match: {
             $or: [
               {

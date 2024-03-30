@@ -97,7 +97,7 @@ exports.get_users_channels = asyncHandler(async (req, res, next) => {
       select: "users channelName lastMessage",
       populate: {
         path: "users channelName lastMessage",
-        select: "username body",
+        select: "username body date",
       },
     });
 

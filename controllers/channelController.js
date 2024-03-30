@@ -1,4 +1,5 @@
 const Channel = require("../models/channel");
+const User = require("../models/user");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 
@@ -17,6 +18,44 @@ exports.get_channel = asyncHandler(async (req, res, next) => {
   try {
     const channel = await Channel.findById(req.params.id);
     res.json(channel);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Return searched channels
+exports.get_searched_channels = asyncHandler(async (req, res, next) => {
+  try {
+    const channels = req.body.channel
+      ? await User.findById(req.user.id, "channels").populate({
+          path: "channels",
+          select: "users channelName lastMessage",
+          populate: { path: "users lastMessage", select: "username body" },
+          match: {
+            $or: [
+              {
+                "channelName.main": { $regex: req.body.channel, $options: "i" },
+              },
+
+              {
+                "channelName.name1": {
+                  $regex: req.body.channel,
+                  $options: "i",
+                },
+              },
+              {
+                "channelName.name2": {
+                  $regex: req.body.channel,
+                  $options: "i",
+                },
+              },
+            ],
+          },
+        })
+      : [];
+
+    console.log(channels);
+    res.json(channels);
   } catch (err) {
     next(err);
   }

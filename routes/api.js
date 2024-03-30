@@ -140,6 +140,11 @@ router.get(
 router.get("/channel/:id", channelController.get_channel);
 
 // POST //
+router.post(
+  "/channel/search",
+  cookieJwtAuth.cookieJwtAuth,
+  channelController.get_searched_channels
+);
 
 router.post("/channel/create", channelController.create_channel);
 

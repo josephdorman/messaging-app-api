@@ -160,6 +160,10 @@ exports.accept_friend_request = asyncHandler(async (req, res, next) => {
     );
 
     const channel = new Channel({
+      channelName: {
+        name1: user.username,
+        name2: friend.username,
+      },
       users: [user._id, friend._id],
     });
 

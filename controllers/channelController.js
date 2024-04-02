@@ -86,19 +86,38 @@ exports.get_channel_messages = asyncHandler(async (req, res, next) => {
 // Create a new channel
 exports.create_channel = [
   // Validate and sanitize fields
-  body("name", "Name must not be empty.").trim().isLength({ min: 1 }).escape(),
+  body("channelName", "Group name must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .isLength({ max: 15 })
+    .withMessage("Group name must be 10 characters or less.")
+    .escape(),
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json(errors);
     }
 
     try {
+      const user = await User.findById(req.user.id, "channels").populate(
+        "channels"
+      );
+
       const channel = new Channel({
-        name: req.body.name,
+        channelName: {
+          main: req.body.channelName,
+        },
       });
+
+      console.log(user, channel);
+
+      user.channels.push(channel._id);
+      channel.users.push(user._id);
+
       channel.save();
+      user.save();
+
       res.json({
         msg: "Channel created successfully!",
       });

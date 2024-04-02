@@ -146,7 +146,11 @@ router.post(
   channelController.get_searched_channels
 );
 
-router.post("/channel/create", channelController.create_channel);
+router.post(
+  "/channel/create",
+  cookieJwtAuth.cookieJwtAuth,
+  channelController.create_channel
+);
 
 /// MESSAGE ROUTES ///
 

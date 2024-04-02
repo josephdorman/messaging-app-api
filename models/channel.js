@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const ChannelSchema = new Schema({
   name: { type: String },
   channelName: {
-    chName: { type: String },
+    main: { type: String },
     name1: { type: String },
     name2: { type: String },
   },

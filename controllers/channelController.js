@@ -29,7 +29,7 @@ exports.get_searched_channels = asyncHandler(async (req, res, next) => {
     const channels = req.body.channel
       ? await User.findById(req.user.id, "channels").populate({
           path: "channels",
-          select: "users channelName lastMessage",
+          select: "users channelName lastMessage owner",
           populate: { path: "users lastMessage", select: "username body date" },
           match: {
             $or: [
@@ -108,6 +108,7 @@ exports.create_channel = [
         channelName: {
           main: req.body.channelName,
         },
+        owner: user._id,
       });
 
       console.log(user, channel);

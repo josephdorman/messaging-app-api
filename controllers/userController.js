@@ -94,7 +94,7 @@ exports.get_users_channels = asyncHandler(async (req, res, next) => {
   try {
     const channels = await User.findById(req.user.id, "channels").populate({
       path: "channels",
-      select: "users channelName lastMessage",
+      select: "users channelName lastMessage owner",
       populate: {
         path: "users channelName lastMessage",
         select: "username body date",

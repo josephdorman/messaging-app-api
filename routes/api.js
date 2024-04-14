@@ -152,6 +152,13 @@ router.post(
   channelController.create_channel
 );
 
+// DELETE //
+router.delete(
+  "/channel/delete",
+  cookieJwtAuth.cookieJwtAuth,
+  channelController.delete_channel
+);
+
 /// MESSAGE ROUTES ///
 
 // GET //

@@ -1,5 +1,6 @@
 const Channel = require("../models/channel");
 const User = require("../models/user");
+const Message = require("../models/message");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 
@@ -75,6 +76,34 @@ exports.get_channel_messages = asyncHandler(async (req, res, next) => {
       });
 
     res.json(channel);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Delete a channel
+exports.delete_channel = asyncHandler(async (req, res, next) => {
+  try {
+    const channel = await Channel.findById(
+      req.body.channel,
+      "users messages"
+    ).populate("users messages");
+
+    const users = await User.updateMany(
+      { _id: { $in: channel.users } },
+      { $pull: { channels: req.body.channel } },
+      { $pull: { messages: { $in: channel.messages } } }
+    );
+
+    console.log("past users", channel.messages);
+    const deleteMessages = await Message.deleteMany({
+      _id: { $in: channel.messages },
+    });
+
+    console.log("past messages");
+    const deleteChannel = await Channel.findByIdAndDelete(req.body.channel);
+
+    res.json({ msg: "Channel deleted!" });
   } catch (err) {
     next(err);
   }

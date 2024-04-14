@@ -49,6 +49,10 @@ const socketServer = (server) => {
       io.emit("receive_last_message", message);
     });
 
+    socket.on("delete_channel", () => {
+      io.emit("refresh_channels");
+    });
+
     socket.on("disconnect", () => {
       onlineUsers = onlineUsers.filter((user) => user.socketId !== socket.id);
 

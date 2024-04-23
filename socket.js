@@ -14,8 +14,9 @@ const socketServer = (server) => {
     console.log(`User Connected: ${socket.id}`);
 
     socket.on("user_online", (data) => {
-      if (!onlineUsers.some((user) => user.userId === data.id)) {
-        onlineUsers.push({ userId: data.id, socketId: socket.id });
+      if (!onlineUsers.some((user) => user._id === data._id)) {
+        // Currently only returning other users no matter if they are friends
+        onlineUsers.push(data);
       }
 
       io.emit("receive_friends", onlineUsers);

@@ -203,11 +203,11 @@ exports.accept_friend_request = asyncHandler(async (req, res, next) => {
     console.log(req.body.friendId, req.user.id);
     const user = await User.findById(
       req.user.id,
-      "friends friendRequests channels"
+      "username friends friendRequests channels"
     );
     const friend = await User.findById(
       req.body.friendId,
-      "friends friendRequests channels"
+      "username friends friendRequests channels"
     );
 
     const channel = new Channel({

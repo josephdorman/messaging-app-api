@@ -72,12 +72,14 @@ exports.get_searched_friends_in_channel = asyncHandler(
       const channelArr = JSON.stringify(channel.users);
 
       if (req.body.searchMode === "add") {
+        console.log(user.friends, channelArr);
         for (let i = 0; i < user.friends.length; i++) {
-          if (channelArr.indexOf(JSON.stringify(user.friends[i])) === -1) {
+          if (channelArr.indexOf(JSON.stringify(user.friends[i])) !== -1) {
             newArr.push(user.friends[i]);
           }
         }
 
+        console.log(newArr);
         res.json(newArr);
       } else if (req.body.searchMode === "kick") {
         for (let i = 0; i < user.friends.length; i++) {
@@ -199,10 +201,13 @@ exports.send_friend_request = [
 exports.accept_friend_request = asyncHandler(async (req, res, next) => {
   try {
     console.log(req.body.friendId, req.user.id);
-    const user = await User.findById(req.user.id, "friends friendRequests");
+    const user = await User.findById(
+      req.user.id,
+      "friends friendRequests channels"
+    );
     const friend = await User.findById(
       req.body.friendId,
-      "friends friendRequests"
+      "friends friendRequests channels"
     );
 
     const channel = new Channel({

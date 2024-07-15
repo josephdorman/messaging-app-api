@@ -115,8 +115,20 @@ exports.get_friend_requests = asyncHandler(async (req, res, next) => {
 exports.remove_friend = asyncHandler(async (req, res, next) => {
   try {
     console.log(req.body.friendId, req.user.id);
-    const user = await User.findById(req.user.id, "friends");
-    const friends = await User.findById(req.body.friendId, "friends");
+    const user = await User.findById(req.user.id, "friends channels");
+    const friends = await User.findById(req.body.friendId, "friends channels");
+
+    // Find "DM" channel and pull it from both users
+    const channel = await Channel.findOne({
+      users: {
+        $all: [user._id, friends._id],
+        $size: 2,
+      },
+      "channelName.main": { $exists: false },
+    });
+
+    user.channels.pull(channel._id);
+    friends.channels.pull(channel._id);
 
     user.friends.pull(friends._id);
     friends.friends.pull(user._id);

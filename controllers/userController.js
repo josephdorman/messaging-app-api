@@ -113,11 +113,26 @@ exports.get_users_channels = asyncHandler(async (req, res, next) => {
 /// Cant block a user who is already blocked
 exports.block_user = asyncHandler(async (req, res, next) => {
   try {
-    const friend = await User.findById(req.body.friendId, "friends");
-    const user = await User.findById(req.user.id, "friends blocked");
+    const friend = await User.findById(req.body.friendId, "friends channels");
+    const user = await User.findById(req.user.id, "friends channels blocked");
+    const channel = await Channel.findOne({
+      users: {
+        $all: [user._id, friend._id],
+        $size: 2,
+      },
+      "channelName.main": { $exists: false },
+    });
+
+    if (channel) {
+      user.channels.pull(channel._id);
+      friend.channels.pull(channel._id);
+    }
+
     user.friends.pull(friend._id);
-    user.blocked.push(friend._id);
     friend.friends.pull(user._id);
+
+    user.blocked.push(friend._id);
+
     user.save();
     friend.save();
 

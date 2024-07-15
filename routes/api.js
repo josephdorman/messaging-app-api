@@ -143,6 +143,12 @@ router.get(
   channelController.get_channel_messages
 );
 
+router.get(
+  "/channel/dm/:id",
+  cookieJwtAuth.cookieJwtAuth,
+  channelController.get_dm_channel
+);
+
 router.get("/channel/:id", channelController.get_channel);
 
 // POST //

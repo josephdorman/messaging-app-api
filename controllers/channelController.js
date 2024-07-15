@@ -24,6 +24,25 @@ exports.get_channel = asyncHandler(async (req, res, next) => {
   }
 });
 
+exports.get_dm_channel = asyncHandler(async (req, res, next) => {
+  try {
+    const channel = await Channel.findOne(
+      {
+        users: {
+          $all: [req.user.id, req.params.id],
+          $size: 2,
+        },
+        "channelName.main": { $exists: false },
+      },
+      "_id"
+    );
+
+    res.json(channel);
+  } catch {
+    next(err);
+  }
+});
+
 // Return searched channels
 exports.get_searched_channels = asyncHandler(async (req, res, next) => {
   try {

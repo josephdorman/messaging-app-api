@@ -222,24 +222,37 @@ exports.accept_friend_request = asyncHandler(async (req, res, next) => {
       "username friends friendRequests channels"
     );
 
-    const channel = new Channel({
-      channelName: {
-        name1: user.username,
-        name2: friend.username,
+    const existingChannel = await Channel.findOne({
+      users: {
+        $all: [user._id, friend._id],
+        $size: 2,
       },
-      users: [user._id, friend._id],
+      "channelName.main": { $exists: false },
     });
+
+    if (existingChannel) {
+      user.channels.push(existingChannel._id);
+      friend.channels.push(existingChannel._id);
+    } else {
+      const channel = new Channel({
+        channelName: {
+          name1: user.username,
+          name2: friend.username,
+        },
+        users: [user._id, friend._id],
+      });
+
+      user.channels.push(channel._id);
+      friend.channels.push(channel._id);
+      channel.save();
+    }
 
     user.friends.push(friend._id);
     friend.friends.push(user._id);
 
-    user.channels.push(channel._id);
-    friend.channels.push(channel._id);
-
     user.friendRequests.received.pull(friend._id);
     friend.friendRequests.sent.pull(user._id);
 
-    channel.save();
     user.save();
     friend.save();
 

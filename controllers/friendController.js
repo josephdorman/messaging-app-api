@@ -48,54 +48,6 @@ exports.get_searched_friends = asyncHandler(async (req, res, next) => {
   }
 });
 
-exports.get_searched_friends_in_channel = asyncHandler(
-  async (req, res, next) => {
-    try {
-      if (!req.body.username) return;
-
-      const user = await User.findById(req.user.id, "friends").populate({
-        path: "friends",
-        match: { username: { $regex: req.body.username, $options: "i" } },
-        select: "username profileIMG",
-      });
-
-      const channel = await Channel.findById(
-        req.body.channel,
-        "users"
-      ).populate({
-        path: "users",
-        match: { username: { $regex: req.body.username, $options: "i" } },
-        select: "username profileIMG",
-      });
-
-      const newArr = [];
-      const channelArr = JSON.stringify(channel.users);
-
-      if (req.body.searchMode === "add") {
-        console.log(user.friends, channelArr);
-        for (let i = 0; i < user.friends.length; i++) {
-          if (channelArr.indexOf(JSON.stringify(user.friends[i])) !== -1) {
-            newArr.push(user.friends[i]);
-          }
-        }
-
-        console.log(newArr);
-        res.json(newArr);
-      } else if (req.body.searchMode === "kick") {
-        for (let i = 0; i < user.friends.length; i++) {
-          if (channelArr.indexOf(JSON.stringify(user.friends[i])) !== -1) {
-            newArr.push(user.friends[i]);
-          }
-        }
-
-        res.json(newArr);
-      }
-    } catch (err) {
-      next(err);
-    }
-  }
-);
-
 // Return friend requests
 exports.get_friend_requests = asyncHandler(async (req, res, next) => {
   try {

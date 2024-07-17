@@ -102,12 +102,6 @@ router.post(
 );
 
 router.post(
-  "/friend/search/channel",
-  cookieJwtAuth.cookieJwtAuth,
-  friendController.get_searched_friends_in_channel
-);
-
-router.post(
   "/friend/remove",
   cookieJwtAuth.cookieJwtAuth,
   friendController.remove_friend

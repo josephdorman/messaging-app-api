@@ -100,6 +100,20 @@ exports.get_channel_messages = asyncHandler(async (req, res, next) => {
   }
 });
 
+// Return users in channel
+exports.get_channel_users = asyncHandler(async (req, res, next) => {
+  try {
+    const users = await Channel.findById(req.params.id, "users").populate({
+      path: "users",
+      select: "username profileIMG",
+    });
+
+    res.json(users);
+  } catch (err) {
+    next(err);
+  }
+});
+
 // Delete a channel
 exports.delete_channel = asyncHandler(async (req, res, next) => {
   try {

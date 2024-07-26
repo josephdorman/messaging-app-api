@@ -82,6 +82,12 @@ router.get(
 );
 
 router.get(
+  "/friends/invites/:id",
+  cookieJwtAuth.cookieJwtAuth,
+  friendController.get_friend_channel_availability
+);
+
+router.get(
   "/friends/pending",
   cookieJwtAuth.cookieJwtAuth,
   friendController.get_friend_requests
@@ -135,6 +141,12 @@ router.get(
   "/channel/:id/messages",
   cookieJwtAuth.cookieJwtAuth,
   channelController.get_channel_messages
+);
+
+router.get(
+  "/channel/:id/users",
+  cookieJwtAuth.cookieJwtAuth,
+  channelController.get_channel_users
 );
 
 router.get(

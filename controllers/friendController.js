@@ -19,15 +19,12 @@ exports.get_friends = asyncHandler(async (req, res, next) => {
 // Return friends that are not in channel requested
 exports.get_friend_channel_availability = asyncHandler(
   async (req, res, next) => {
-    console.log(req.params.id);
     try {
       const friends = await User.findById(req.user.id, "friends").populate({
         path: "friends",
         select: "username profileIMG channels",
         match: { channels: { $nin: [req.params.id] } },
       });
-
-      console.log(friends, "result");
 
       res.json(friends);
     } catch (err) {

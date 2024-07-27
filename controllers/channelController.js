@@ -106,6 +106,7 @@ exports.get_channel_users = asyncHandler(async (req, res, next) => {
     const users = await Channel.findById(req.params.id, "users").populate({
       path: "users",
       select: "username profileIMG",
+      match: { _id: { $ne: req.user.id } },
     });
 
     res.json(users);

@@ -108,6 +108,12 @@ router.post(
 );
 
 router.post(
+  "/friends/invites/searched",
+  cookieJwtAuth.cookieJwtAuth,
+  friendController.get_searched_friend_channel_availability
+);
+
+router.post(
   "/friend/remove",
   cookieJwtAuth.cookieJwtAuth,
   friendController.remove_friend

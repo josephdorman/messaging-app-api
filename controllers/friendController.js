@@ -33,6 +33,29 @@ exports.get_friend_channel_availability = asyncHandler(
   }
 );
 
+exports.get_searched_friend_channel_availability = asyncHandler(
+  async (req, res, next) => {
+    try {
+      const friends = req.body.username
+        ? await User.findById(req.user.id, "friends").populate({
+            path: "friends",
+            select: "username profileIMG channels",
+            match: {
+              $and: [
+                { username: { $regex: req.body.username, $options: "i" } },
+                { channels: { $nin: [req.body.id] } },
+              ],
+            },
+          })
+        : [];
+
+      res.json(friends);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
 // Return specific friend
 exports.get_friend = asyncHandler(async (req, res, next) => {
   try {

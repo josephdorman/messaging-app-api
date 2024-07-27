@@ -171,6 +171,12 @@ router.post(
 );
 
 router.post(
+  "/channel/invite",
+  cookieJwtAuth.cookieJwtAuth,
+  channelController.invite_to_channel
+);
+
+router.post(
   "/channel/create",
   cookieJwtAuth.cookieJwtAuth,
   channelController.create_channel

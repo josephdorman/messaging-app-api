@@ -114,6 +114,57 @@ exports.get_channel_users = asyncHandler(async (req, res, next) => {
   }
 });
 
+// Send user invite to channel
+exports.invite_to_channel = asyncHandler(async (req, res, next) => {
+  try {
+    const mainUser = await User.findById(req.user.id);
+    const user = await User.findById(req.body.userId);
+
+    const sendError = (msg) => {
+      return res.status(400).json({
+        errors: [{ msg: msg }],
+      });
+    };
+
+    if (user) {
+      if (user.channels.includes(req.body.channelId)) {
+        sendError("You are already in this channel");
+        return;
+      } else if (user.channelRequests.received.length > 0) {
+        user.channelRequests.received.map((inv) => {
+          if (
+            inv.user.toString() == req.user.id &&
+            inv.channel.toString() == req.body.channelId
+          ) {
+            sendError("Invite already sent");
+            return;
+          }
+        });
+      } else {
+        mainUser.channelRequests.sent.push({
+          user: req.body.userId,
+          channel: req.body.channelId,
+        });
+        user.channelRequests.received.push({
+          user: req.user.id,
+          channel: req.body.channelId,
+        });
+
+        mainUser.save();
+        user.save();
+
+        res.json({ msg: "Invite sent!" });
+        return;
+      }
+    } else {
+      sendError("User not found");
+      return;
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
 // Delete a channel
 exports.delete_channel = asyncHandler(async (req, res, next) => {
   try {

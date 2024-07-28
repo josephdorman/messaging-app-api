@@ -171,6 +171,12 @@ router.post(
 );
 
 router.post(
+  "/channel/searched/users",
+  cookieJwtAuth.cookieJwtAuth,
+  channelController.get_searched_channel_users
+);
+
+router.post(
   "/channel/invite",
   cookieJwtAuth.cookieJwtAuth,
   channelController.invite_to_channel

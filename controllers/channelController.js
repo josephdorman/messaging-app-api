@@ -115,6 +115,26 @@ exports.get_channel_users = asyncHandler(async (req, res, next) => {
   }
 });
 
+// Return searched for users in channel
+exports.get_searched_channel_users = asyncHandler(async (req, res, next) => {
+  try {
+    const users = await Channel.findById(req.body.id, "users").populate({
+      path: "users",
+      select: "_id username profileIMG",
+      match: {
+        $and: [
+          { username: { $regex: req.body.search, $options: "i" } },
+          { _id: { $ne: req.user.id } },
+        ],
+      },
+    });
+
+    res.json(users);
+  } catch (err) {
+    next(err);
+  }
+});
+
 // Send user invite to channel
 exports.invite_to_channel = asyncHandler(async (req, res, next) => {
   try {

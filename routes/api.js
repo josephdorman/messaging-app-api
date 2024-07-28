@@ -126,6 +126,12 @@ router.post(
 );
 
 router.post(
+  "/friend/request/nosearch",
+  cookieJwtAuth.cookieJwtAuth,
+  friendController.send_friend_request_nosearch
+);
+
+router.post(
   "/friend/accept",
   cookieJwtAuth.cookieJwtAuth,
   friendController.accept_friend_request

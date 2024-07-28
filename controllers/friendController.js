@@ -201,6 +201,57 @@ exports.send_friend_request = [
   }),
 ];
 
+exports.send_friend_request_nosearch = asyncHandler(async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id);
+    const friend = await User.findById(req.body.userId);
+
+    const sendError = (msg) => {
+      return res.status(400).json({
+        errors: [{ msg: msg }],
+      });
+    };
+
+    if (friend) {
+      // Check if sending to self
+      if (user._id.toString() === friend._id.toString()) {
+        sendError("You can't send a friend request to yourself");
+        return;
+      }
+      if (friend.blocked.includes(user._id)) {
+        sendError("The user you're trying to add has blocked you");
+        return;
+      }
+      if (user.blocked.includes(friend._id)) {
+        sendError("You can't send a friend request to a blocked user");
+        return;
+      }
+      // Check if already friends
+      if (user.friends.includes(friend._id)) {
+        sendError("Already friends with this user");
+        return;
+      }
+      // Check if already sent a friend request
+      if (user.friendRequests.sent.includes(friend._id)) {
+        sendError("Already sent a friend request to this user");
+        return;
+      }
+
+      friend.friendRequests.received.push(req.user.id);
+      user.friendRequests.sent.push(friend._id);
+      friend.save();
+      user.save();
+    } else {
+      sendError("User not found");
+      return;
+    }
+
+    res.json({ msg: "Friend request sent!" });
+  } catch (err) {
+    next(err);
+  }
+});
+
 // Accept friend request
 exports.accept_friend_request = asyncHandler(async (req, res, next) => {
   try {

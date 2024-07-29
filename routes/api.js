@@ -189,6 +189,12 @@ router.post(
 );
 
 router.post(
+  "/channel/kick",
+  cookieJwtAuth.cookieJwtAuth,
+  channelController.kick_from_channel
+);
+
+router.post(
   "/channel/create",
   cookieJwtAuth.cookieJwtAuth,
   channelController.create_channel

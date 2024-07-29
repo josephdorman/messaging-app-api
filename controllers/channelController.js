@@ -186,6 +186,22 @@ exports.invite_to_channel = asyncHandler(async (req, res, next) => {
   }
 });
 
+exports.kick_from_channel = asyncHandler(async (req, res, next) => {
+  try {
+    const user = await User.findById(req.body.userId, "channels");
+    const channel = await Channel.findById(req.body.channelId, "users");
+
+    user.channels.pull(req.body.channelId);
+    channel.users.pull(req.body.userId);
+
+    user.save();
+    channel.save();
+    res.json({ msg: "User kicked!" });
+  } catch (err) {
+    next(err);
+  }
+});
+
 // Delete a channel
 exports.delete_channel = asyncHandler(async (req, res, next) => {
   try {

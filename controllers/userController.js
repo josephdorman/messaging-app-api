@@ -128,6 +128,11 @@ exports.block_user = asyncHandler(async (req, res, next) => {
       friend.channels.pull(channel._id);
     }
 
+    if (user.blocked.includes(friend._id)) {
+      res.json({ msg: "User already blocked!" });
+      return;
+    }
+
     user.friends.pull(friend._id);
     friend.friends.pull(user._id);
 

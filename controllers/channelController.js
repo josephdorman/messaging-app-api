@@ -8,6 +8,7 @@ const { body, validationResult } = require("express-validator");
 exports.get_channels = asyncHandler(async (req, res, next) => {
   try {
     const channels = await Channel.find();
+
     res.json(channels);
   } catch (err) {
     next(err);
@@ -50,11 +51,17 @@ exports.get_searched_channels = asyncHandler(async (req, res, next) => {
       ? await User.findById(req.user.id, "channels").populate({
           path: "channels",
           select: "users channelName lastMessage owner",
-          populate: { path: "users lastMessage", select: "username body date" },
+          populate: {
+            path: "users lastMessage",
+            select: "username body date",
+          },
           match: {
             $or: [
               {
-                "channelName.main": { $regex: req.body.channel, $options: "i" },
+                "channelName.main": {
+                  $regex: req.body.channel,
+                  $options: "i",
+                },
               },
 
               {

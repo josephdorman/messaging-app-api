@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const User = require("../models/user");
 const Channel = require("../models/channel");
+const Notification = require("../models/notification");
 const { body, validationResult } = require("express-validator");
 
 // Return all friends
@@ -185,8 +186,16 @@ exports.send_friend_request = [
           return;
         }
 
+        const notification = new Notification({
+          user: req.user.id,
+          type: "friend",
+          body: `${user.username} sent you a friend request`,
+        });
+
+        friend.notifications.push(notification._id);
         friend.friendRequests.received.push(req.user.id);
         user.friendRequests.sent.push(friend._id);
+        notification.save();
         friend.save();
         user.save();
       } else {
@@ -237,8 +246,16 @@ exports.send_friend_request_nosearch = asyncHandler(async (req, res, next) => {
         return;
       }
 
+      const notification = new Notification({
+        user: req.user.id,
+        type: "friend",
+        body: `${user.username} sent you a friend request`,
+      });
+
+      friend.notifications.push(notification._id);
       friend.friendRequests.received.push(req.user.id);
       user.friendRequests.sent.push(friend._id);
+      notification.save();
       friend.save();
       user.save();
     } else {

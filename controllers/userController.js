@@ -76,6 +76,28 @@ exports.get_user = asyncHandler(async (req, res, next) => {
   }
 });
 
+exports.get_censored = asyncHandler(async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id).select(
+      "profileIMG username email"
+    );
+
+    const censorEmail = (user) => {
+      const split = user.email.split("@");
+      const censored = split[0].replace(/./g, "*");
+      return `${censored}@${split[1]}`;
+    };
+
+    user.email = censorEmail(user);
+    user.password = "**********";
+
+    console.log(user);
+    res.json(user);
+  } catch (err) {
+    next(err);
+  }
+});
+
 // Return blocked users
 exports.get_blocked = asyncHandler(async (req, res, next) => {
   try {

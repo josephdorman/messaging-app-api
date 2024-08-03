@@ -19,10 +19,12 @@ router.get("/", function (req, res, next) {
 
 // GET //
 
+router.get("/users", cookieJwtAuth.cookieJwtAuth, userController.get_users);
+
 router.get(
-  "/users",
-  // passport.authenticate("jwt", { session: false }),
-  userController.get_users
+  "/user/censored",
+  cookieJwtAuth.cookieJwtAuth,
+  userController.get_censored
 );
 
 router.get(
@@ -37,7 +39,7 @@ router.get(
   userController.get_users_channels
 );
 
-router.get("/user/:id", userController.get_user);
+router.get("/user/:id", cookieJwtAuth.cookieJwtAuth, userController.get_user);
 
 // POST //
 

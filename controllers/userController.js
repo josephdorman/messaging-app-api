@@ -79,7 +79,7 @@ exports.get_user = asyncHandler(async (req, res, next) => {
 exports.get_censored = asyncHandler(async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id).select(
-      "profileIMG username email"
+      "profileIMG username email about"
     );
 
     const censorEmail = (user) => {
@@ -190,7 +190,7 @@ exports.create_user = [
   // Validate and sanitize fields.
   body("username", "Username must not be empty.")
     .trim()
-    .isLength({ min: 1 })
+    .isLength({ min: 1, max: 12 })
     .custom(async (value) => {
       const existingUsername = await User.findOne({
         username: { $regex: value, $options: "i" },
@@ -254,6 +254,143 @@ exports.create_user = [
       res.json({
         msg: "User created successfully!",
       });
+    } catch (err) {
+      next(err);
+    }
+  }),
+];
+
+exports.update_email = [
+  body("email", "Email must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .isEmail()
+    .withMessage("Not a valid e-mail address")
+    .custom(async (value) => {
+      const existingEmail = await User.findOne({ email: value });
+      if (existingEmail) {
+        throw new Error("Email already in use");
+      }
+    })
+    .escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      const user = await User.findByIdAndUpdate(req.user.id, {
+        email: req.body.email,
+      });
+
+      res.json({ msg: "Email updated successfully!" });
+    } catch (err) {
+      next(err);
+    }
+  }),
+];
+
+exports.update_username = [
+  body("username", "Username must not be empty.")
+    .trim()
+    .isLength({ min: 1, max: 12 })
+    .custom(async (value) => {
+      const existingUsername = await User.findOne({
+        username: { $regex: value, $options: "i" },
+      });
+      if (existingUsername) {
+        throw new Error("Username already in use");
+      }
+    })
+    .escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      const user = await User.findByIdAndUpdate(req.user.id, {
+        username: req.body.username,
+      });
+
+      console.log(user);
+
+      res.json({ msg: "Username updated successfully!" });
+    } catch (err) {
+      next(err);
+    }
+  }),
+];
+
+exports.update_password = [
+  body(
+    "password",
+    "Password needs to be atleast 5 characters long, have one uppercase, one number and one symbol."
+  )
+    .trim()
+    .isStrongPassword({
+      minLength: 5,
+      //minUppercase: 1,
+      //minNumbers: 1,
+      //minSymbols: 1,
+    })
+    .escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      const user = await User.findByIdAndUpdate(req.user.id, {
+        password: req.body.password,
+      });
+
+      console.log(user);
+
+      res.json({ msg: "Password updated successfully!" });
+    } catch (err) {
+      next(err);
+    }
+  }),
+];
+
+exports.update_about = [
+  body("about", "Username must not be empty.")
+    .trim()
+    .custom(async (value) => {
+      const existingAbout = await User.findById(req.user.id, {
+        about: { $regex: value, $options: "i" },
+      });
+      if (existingAbout) {
+        throw new Error("About cannot be the same.");
+      }
+    })
+    .escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      const user = await User.findByIdAndUpdate(req.user.id, {
+        about: req.body.about,
+      });
+
+      console.log(user);
+
+      res.json({ msg: "About updated successfully!" });
     } catch (err) {
       next(err);
     }

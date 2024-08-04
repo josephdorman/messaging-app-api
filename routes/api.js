@@ -75,6 +75,31 @@ router.post(
 
 router.post("/user/create", userController.create_user);
 
+// PUT //
+router.put(
+  "/user/update/email",
+  cookieJwtAuth.cookieJwtAuth,
+  userController.update_email
+);
+
+router.put(
+  "/user/update/username",
+  cookieJwtAuth.cookieJwtAuth,
+  userController.update_username
+);
+
+router.put(
+  "/user/update/password",
+  cookieJwtAuth.cookieJwtAuth,
+  userController.update_password
+);
+
+router.put(
+  "/user/update/about",
+  cookieJwtAuth.cookieJwtAuth,
+  userController.update_about
+);
+
 /// FRIEND ROUTES ///
 
 // GET //

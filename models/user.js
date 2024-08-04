@@ -30,6 +30,7 @@ const UserSchema = new Schema({
   blocked: [{ type: Schema.Types.ObjectId, ref: "User" }],
   channels: [{ type: Schema.Types.ObjectId, ref: "Channel" }],
   messages: [{ type: Schema.Types.ObjectId, ref: "Message" }],
+  about: { type: String },
 });
 
 module.exports = mongoose.model("User", UserSchema);

@@ -65,9 +65,9 @@ exports.get_friend = asyncHandler(async (req, res, next) => {
       .populate({
         path: "friends",
         match: { _id: req.params.id },
-        select: "username profileIMG",
+        select: "username profileIMG about",
       });
-    // console.log(friend.friends[0]);
+
     res.json(friend.friends[0]);
   } catch (err) {
     next(err);

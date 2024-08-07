@@ -186,6 +186,8 @@ exports.send_friend_request = [
           return;
         }
 
+        // Notifications currently disabled due to redundancy
+        /*
         const notification = new Notification({
           user: req.user.id,
           type: "friend",
@@ -193,9 +195,11 @@ exports.send_friend_request = [
         });
 
         friend.notifications.push(notification._id);
+        notification.save();
+        */
+
         friend.friendRequests.received.push(req.user.id);
         user.friendRequests.sent.push(friend._id);
-        notification.save();
         friend.save();
         user.save();
       } else {
@@ -245,7 +249,8 @@ exports.send_friend_request_nosearch = asyncHandler(async (req, res, next) => {
         sendError("Already sent a friend request to this user");
         return;
       }
-
+      // Notifications currently disabled due to redundancy
+      /*
       const notification = new Notification({
         user: req.user.id,
         type: "friend",
@@ -253,9 +258,11 @@ exports.send_friend_request_nosearch = asyncHandler(async (req, res, next) => {
       });
 
       friend.notifications.push(notification._id);
+      notification.save();
+      */
+
       friend.friendRequests.received.push(req.user.id);
       user.friendRequests.sent.push(friend._id);
-      notification.save();
       friend.save();
       user.save();
     } else {

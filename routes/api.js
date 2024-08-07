@@ -9,6 +9,7 @@ const channelController = require("../controllers/channelController");
 const messageController = require("../controllers/messageController");
 const friendController = require("../controllers/friendController");
 const notificationController = require("../controllers/notificationController");
+const feedbackController = require("../controllers/feedbackController");
 
 /* GET api index. */
 router.get("/", function (req, res, next) {
@@ -272,6 +273,15 @@ router.post(
   "/notification/remove",
   cookieJwtAuth.cookieJwtAuth,
   notificationController.remove_notification
+);
+
+/// FEEDBACK ROUTES ///
+
+// POST //
+router.post(
+  "/feedback",
+  cookieJwtAuth.cookieJwtAuth,
+  feedbackController.post_feedback
 );
 
 module.exports = router;

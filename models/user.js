@@ -31,6 +31,7 @@ const UserSchema = new Schema({
   channels: [{ type: Schema.Types.ObjectId, ref: "Channel" }],
   messages: [{ type: Schema.Types.ObjectId, ref: "Message" }],
   about: { type: String },
+  status: { type: String, enum: ["online", "offline"], default: "offline" },
 });
 
 module.exports = mongoose.model("User", UserSchema);

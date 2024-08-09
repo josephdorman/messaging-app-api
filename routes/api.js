@@ -111,6 +111,12 @@ router.get(
 );
 
 router.get(
+  "/friends/online",
+  cookieJwtAuth.cookieJwtAuth,
+  friendController.get_online_friends
+);
+
+router.get(
   "/friends/invites/:id",
   cookieJwtAuth.cookieJwtAuth,
   friendController.get_friend_channel_availability

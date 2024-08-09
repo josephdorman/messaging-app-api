@@ -1,3 +1,4 @@
+const User = require("./models/user");
 const { Server } = require("socket.io");
 
 const socketServer = (server) => {
@@ -8,28 +9,52 @@ const socketServer = (server) => {
     },
   });
 
-  let onlineUsers = [];
-
+  // "connection" activates when a user is simply on the website even the signup/login page
   io.on("connection", (socket) => {
-    console.log(`User Connected: ${socket.id}`);
-
+    // when user logs into the app and not just on the signup/login page
     socket.on("user_online", (data) => {
-      if (!onlineUsers.some((user) => user._id === data._id)) {
-        // Currently only returning other users no matter if they are friends
-        onlineUsers.push(data);
-      }
+      const setOnline = async (id) => {
+        const user = await User.findById(id)
+          .select("username profileIMG status friends")
+          .populate("friends", "username profileIMG status");
+        user.status = "online";
+        user.save();
 
-      io.emit("receive_friends", onlineUsers);
+        socket.data = user;
+        socket.join(user._id.toString());
+
+        if (user.friends) {
+          for (let i = 0; i < user.friends.length; i++) {
+            const channelName = user.friends[i]._id.toString();
+            io.to(channelName)
+              .except(user._id.toString())
+              .emit("friend_online");
+          }
+        }
+      };
+
+      setOnline(data._id);
     });
 
-    socket.on("get_friends", () => {
-      io.emit("receive_friends", onlineUsers);
+    socket.on("refresh_friends", (id) => {
+      const getFriends = async (id) => {
+        const userFriends = await User.findById(id, "friends").populate({
+          path: "friends",
+          select: "username profileIMG status",
+          match: { status: "online" },
+        });
+
+        console.log(userFriends.friends);
+
+        io.emit("get_friends", userFriends.friends);
+      };
+
+      getFriends(id);
     });
 
     socket.on("join_channels", (channels) => {
       if (channels) {
         channels.forEach((channel) => {
-          console.log("joining channel", channel._id);
           socket.join(channel._id);
         });
       }
@@ -54,12 +79,45 @@ const socketServer = (server) => {
       io.emit("refresh_channels");
     });
 
-    socket.on("disconnect", () => {
-      onlineUsers = onlineUsers.filter((user) => user.socketId !== socket.id);
+    socket.on("user_offline", () => {
+      const setOffline = async (id) => {
+        const user = await User.findByIdAndUpdate(id, { status: "offline" });
 
-      io.emit("receive_friends", onlineUsers);
-      console.log(`Leaving Rooms: ${socket.rooms}`);
-      console.log(`User Disconnected: ${socket.id}`);
+        if (socket.data.friends) {
+          for (let i = 0; i < socket.data.friends.length; i++) {
+            const channelName = socket.data.friends[i]._id.toString();
+            io.to(channelName)
+              .except(user._id.toString())
+              .emit("friend_offline");
+          }
+        }
+      };
+
+      setOffline(socket.data._id);
+    });
+
+    socket.on("disconnect", () => {
+      const setOffline = async (id) => {
+        const user = await User.findByIdAndUpdate(id, { status: "offline" });
+
+        //console.log(socket.data);
+
+        if (socket.data.friends) {
+          for (let i = 0; i < socket.data.friends.length; i++) {
+            const channelName = socket.data.friends[i]._id.toString();
+            io.to(channelName)
+              .except(user._id.toString())
+              .emit("friend_offline");
+          }
+        }
+      };
+
+      setOffline(socket.data._id);
+      // io.emit("receive_friends", onlineUsers);
+      //console.log(`Leaving Rooms: ${socket.rooms}`);
+      //console.log(
+      //  `User Disconnected: ${socket.id} ${JSON.stringify(socket.data)})}`
+      //);
     });
   });
 };

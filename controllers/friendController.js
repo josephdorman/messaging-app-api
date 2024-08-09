@@ -17,6 +17,20 @@ exports.get_friends = asyncHandler(async (req, res, next) => {
   }
 });
 
+exports.get_online_friends = asyncHandler(async (req, res, next) => {
+  try {
+    const friends = await User.findById(req.user.id, "friends").populate({
+      path: "friends",
+      select: "username profileIMG status",
+      match: { status: "online" },
+    });
+
+    res.json(friends);
+  } catch (err) {
+    next(err);
+  }
+});
+
 // Return friends that are not in channel requested
 exports.get_friend_channel_availability = asyncHandler(
   async (req, res, next) => {
